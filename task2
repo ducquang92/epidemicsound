@@ -1,0 +1,18 @@
+1. SQL Injection (High)
+a. Description
+The music search page has a SQL Injection vulerability. When user input a search string, the web application creates SQL query string by concatenating the search string with predefined SQL query.
+
+```
+$keyword = $_GET["keyword"];
+$query = "SELECT name,description,author from songs where name LIKE '%" + $keyword + "'";
+```
+By sending a malicious keyword, attackers can modify the SQL query string to extract data from other tables. For example, if attackers send the string 0000' UNION SELECT username, password, email from users ' # then the query string will become
+SELECT name,description,author from songs where name LIKE '%00000' UNION SELECT username, password, email from users 
+b. Impact
+Malicious attackers can extract data from the database and can control the server by uploading a shell into the server.
+c. Solution
+Use prepared statement instead
+2. Cross site scripting
+3. Command injection
+5. Use of vulerable software
+6. Privilege escalation
