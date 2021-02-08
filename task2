@@ -96,11 +96,23 @@ b. Impact
 - The second issue allows the attackers to capture password of a user and log in using the user password.
 c. Solution
 - Use password-hasing functions (e.g, bcrypt) or use salting with hash to store the password.
-- Use TLS instead of encrypting the password in the client-side.
+- Use TLS instead of encrypting the password in the web page (client side).
 d. Reference
 - https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
 - https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Protection_Cheat_Sheet.html
-6. Password policy is not defined (Medium)
+6. Use of vulnerable software (High)
+a. Description
+According to auditing result, multiple Windows servers and personal computers are supporting SMB protocol version 1 which is vulnerable to EternalBlue vulnerability. This unauthenticated vulnerability allows attackers to gain access to the computers by interacting with SMB v1.
+Moreover, SMB ports of Windows cloud servers (139, 445) are publicly accessible from the Internet.
+b. Impact
+With this configuration, attackers can easily gain access to the servers via the Internet. Besides, automated malware can also quickly spread through the network by exploiting the vulnerability.
+c. Solution
+- Upgrade the SMB version to the latest version to fix the vulnerability and disable SMB version 1.
+- Use patch management solution to continuously monitor and update softwares in the system to the latest version.
+d. Reference
+- https://www.loginradius.com/blog/async/eternal-blue-retrospective/
+- https://www.gartner.com/reviews/market/client-management-tools
+7. Password policy is not defined (Medium)
 a. Description
 According to system audit result of the servers, the password policy (password complexity, password expiration time) for admin account is not defined. Besides, the admin account password has not been changed for more than 1 year. Additionally, root user is allowed to log in to the server via SSH.
 b. Impact
@@ -111,7 +123,7 @@ c. Solution
 d. Reference
 - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/chap-hardening_your_system_with_tools_and_services
 - https://www.gartner.com/reviews/market/privileged-access-management
-7. Weak administrator password management of personal computers (Medium)
+8. Weak administrator password management of personal computers (Medium)
 a. Description
 There are two security issues related to local administrator account password management.
 The first issue is that all local administrator account of employees' personal computers use the same password.
