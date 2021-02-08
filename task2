@@ -67,5 +67,24 @@ system("ls -l /var/songs/" + escapeshellcmd($author) + " | wc -l", $output);
 d. Reference
 - https://owasp.org/www-community/attacks/Command_Injection
 - https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html
+4. API Information disclosure
+a. Description
+In user registration process, the application wants to check if the username already exists and it perform the validation by sending the new username to the API at /api/uservalidation/username. In this vulnerable application, the web application returns a JSON object containing the following information if the user is already exist:
+
+```
+{
+"usernameid": 1,
+"username": "abc",
+"email": "abc@musiccompany.com",
+"phone": "0123456789"
+}
+```
+As the returned JSON object contains too much information, the attacker can retrieve information of all users in the database by sending the list of usernames on a word list. 
+b. Impact
+This is a unauthenticated vulnerability that allows the attackers to retrieve information of all users in the database.
+c. Solution
+The Web API should not send extra information. In this case, instead of sending all data of the user, it should send a list of possible usernames that user can use.
+d. Reference
+- https://apisecurity.io/encyclopedia/content/owasp/api3-excessive-data-exposure.htm
 5. Use of vulerable software
 6. Privilege escalation
