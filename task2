@@ -111,4 +111,14 @@ c. Solution
 d. Reference
 - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/chap-hardening_your_system_with_tools_and_services
 - https://www.gartner.com/reviews/market/privileged-access-management
-7. 
+7. Weak administrator password management of personal computers (Medium)
+a. Description
+There are two security issues related to local administrator account password management.
+The first issue is that all local administrator account of employees' personal computers use the same password.
+The second problem is realted to administrator password managment process. The company utilities Active Directory domain to manage personal computers. In order to periodically change the Administrator password of personal computers, the system administrator uses Group Policy (GPO) to deploy a bat script to change the password. However, the bat script is publicly accessible and it contains the new password in plain text. Therefore, everybody in the network can access the bat file to read the new password. 
+b. Impact
+When the local administrator accounts use the same password, if a computer is infected by a malware, it can quickly spread through other computers in the same network.
+c. Solution
+- Use local administrator password management tool (e.g, Microsoft LAPS) to manage the local administrator passwords of personal computers. Besides, user should use normal user instead of administrator account in their daily activities.
+d. Reference
+- https://support.microsoft.com/en-us/topic/microsoft-security-advisory-local-administrator-password-solution-laps-now-available-may-1-2015-404369c3-ea1e-80ff-1e14-5caafb832f53
