@@ -48,6 +48,24 @@ d. Reference
 - https://owasp.org/www-community/attacks/xss/
 - https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
 - https://owasp.org/www-community/HttpOnly
-3. Command injection
+3. Command injection (High)
+a. Description
+In order to get the total number of songs of a musician, the web frontend allows users to choose the musician name in a drop-down list. The username of the musician will then be submitted to the web server. In the backend, the web application will use the "ls" command to list the content and count number of songs of the corresponding folder of the musician in the file system to retrieve the song list.
+The code snippet to retrieve the song list in the server is as follows:
+```
+$author = $_GET["author"];
+system("ls -l /var/songs/" + $author + " | wc -l", $output);
+```
+The attacker can send a malicious username in the author parameter to execute arbitrary command. For example, if the attacker sends the value "quangld; cat /etc/passwd # ", the web application will also read the output of /etc/passwd file.
+b. Impact
+The attacker can execute artribary command in the server. They can even download a shell to control the server.
+c. Solution
+Avoid directly using functions that trigger system commands. If that is not possible, escape special shell characters before passing them to the function. For example, the above command can be fixed using:
+```
+system("ls -l /var/songs/" + escapeshellcmd($author) + " | wc -l", $output);
+```
+d. Reference
+- https://owasp.org/www-community/attacks/Command_Injection
+- https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html
 5. Use of vulerable software
 6. Privilege escalation
