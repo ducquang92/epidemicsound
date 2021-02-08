@@ -67,7 +67,7 @@ system("ls -l /var/songs/" + escapeshellcmd($author) + " | wc -l", $output);
 d. Reference
 - https://owasp.org/www-community/attacks/Command_Injection
 - https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html
-4. API Information disclosure
+4. Excessive data disclosure (High)
 a. Description
 In user registration process, the application wants to check if the username already exists and it perform the validation by sending the new username to the API at /api/uservalidation/username. In this vulnerable application, the web application returns a JSON object containing the following information if the user is already exist:
 
@@ -86,5 +86,29 @@ c. Solution
 The Web API should not send extra information. In this case, instead of sending all data of the user, it should send a list of possible usernames that user can use.
 d. Reference
 - https://apisecurity.io/encyclopedia/content/owasp/api3-excessive-data-exposure.htm
-5. Use of vulerable software
-6. Privilege escalation
+5. Insufficient cryptography (High)
+a. Description
+There are two security issues related to the login process.
+The first weakness is related to the way the web application stores password. In order to store the password in the database, the web application first hash the password with SHA-256 and then store the hashed password in the database. However, since the password is not hashed with salt (a random value), the attacker can pre-calculate hash values of common passwords and use these precalculated hash values (rainbow table) to compare with the hashed values in the database to crack the password if they can obtain the database.
+The second issue is related to the login process. In order to strengthen security of the login process, the web application frontend decides not to send password in clear text via https. However, the developers decided to handle the encryption and transfer of password themselves via http. The web client first encrypt the password with a key, then send the encrypted password via http to the server. After receving the encrypted password, the server decrypts the encrypted password and compare it with user password in the database. This approach has two issues: (1) the attackers can view source code of the web client to retrieve the key and decrypt the encrypted password, and (2) even without decrypting the encrypted password, the attacker can also capture the encrypted password and resend this value to log in to the server.
+b. Impact
+- The first weakness allows the attacker to crack password of users if they can obtain the database.
+- The second issue allows the attackers to capture password of a user and log in using the user password.
+c. Solution
+- Use password-hasing functions (e.g, bcrypt) or use salting with hash to store the password.
+- Use TLS instead of encrypting the password in the client-side.
+d. Reference
+- https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
+- https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Protection_Cheat_Sheet.html
+6. Password policy is not defined (Medium)
+a. Description
+According to system audit result of the servers, the password policy (password complexity, password expiration time) for admin account is not defined. Besides, the admin account password has not been changed for more than 1 year. Additionally, root user is allowed to log in to the server via SSH.
+b. Impact
+Without strong password policy, it is easier for the attackers to perform password attack on the server. Addtionally, system administrators tend to set the same default password for different servers. Therefore, if a server is compromised, it is likely that the attackers can access other servers using the same password.
+c. Solution
+- Set a strong password policy for servers.
+- Use Privileged Access Management (PAM) solution in case there are many servers that need to be managed.
+d. Reference
+- https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/chap-hardening_your_system_with_tools_and_services
+- https://www.gartner.com/reviews/market/privileged-access-management
+7. 
