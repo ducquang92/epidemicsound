@@ -4,18 +4,18 @@
 
 After performing security assessment on the web application and the systems, we detected in total 8 security findings, including 6 high-severity findings and 2 medium-severity findings. The list of findings are described in the following table:
 
-| ID | Finding                                       |Severity|
-|----| ----------------------------------------------|:------:|
-| 1  | SQL Injection                                 | High   |
-| 2  | Stored cross site scripting (XSS)             | High   |
-| 3  | Command injection                             | High   |
-| 4  | Excessive data disclosure                     | High   |
-| 5  | Insufficient cryptography                     | High   |
-| 6  | Use of vulnerable component                   | High   |
-| 7  | Password policy is not defined                | Medium |
-| 8  | Weak local administrator password management  | Medium |
+| ID | Finding                                       |Severity| Likelihood |
+|----| ----------------------------------------------|:------:| :------:   |
+| 1  | SQL Injection                                 | High   | High       |
+| 2  | Stored cross site scripting (XSS)             | High   | High       |
+| 3  | Command injection                             | High   | High       |
+| 4  | Excessive data disclosure                     | High   | High       |
+| 5  | Insufficient cryptography                     | High   | Medium     |
+| 6  | Use of vulnerable component                   | High   | High       |
+| 7  | Password policy is not defined                | Medium | Medium     |
+| 8  | Weak local administrator password management  | Medium | Medium     |
 
-We suggest to prioritize fixing the high-severity vulnerabilities as soon as possible, and focus on the medium vulnerabilities after that.
+We suggest to fix the high-severity vulnerabilities with high likelihood and high severity as soon as possible, and focus on the medium severity vulnerabilities after that.
 
 ## II. Finding detail
 ### 1. SQL Injection (High)
