@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  securityengineer:
+    image: 127.0.0.1:5000/securityengineer
+    deploy:
+       replicas: 2
+       resources:
+           limits:
+              cpus: "2"
+              memory: "512M"
+           reservations:
+              cpus: "1"
+              memory: "216M"
+    build: .
+    ports:
+      - "80:80"
+      - "443:443"
