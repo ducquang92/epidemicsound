@@ -1,4 +1,4 @@
-# Security assesement report
+# Security assessment report
 
 ## I. Summary
 
@@ -17,10 +17,16 @@ After performing security assessment on the web application and the systems, we 
 
 We suggest to fix the high-severity vulnerabilities with high likelihood and high severity as soon as possible, and focus on the medium severity vulnerabilities after that.
 
+In order to improve the overall security posture of the company, it is advisable that the company consider the following practices:
+- Build security process for the company following ISO 27001. The technical detail can be based on ISO 27002. The mandatory processes should be: vulnerability management, patch management, secure development, internal auditing.
+- Multiple security tools can be used to improve application security: static application security analysis (SAST), dynamic application security analysis (DAST), software composition analysis (SCA). All these tools should be integrated into the CI pipelines of the application to early detect vulnerabilities in the application ("shift-left" security testing). Additionally, periodical penetration testing can also be useful (e.g, once per quarter).
+- In terms of configuration hardening, CIS (https://www.cisecurity.org/cis-benchmarks/) or STIGS (https://public.cyber.mil/stigs/) baselines can be used to periodically test and harden configuration of the servers.
+- To further protect the system (defense-in-depth), the company can consider to implement the following security tools: Web application firewall (WAF), intrusion detection/prevention system (IDPS), Advanced Threat Protection (ATP).
+
 ## II. Finding detail
 ### 1. SQL Injection (High)
 #### a. Description
-The music search page has a SQL Injection vulerability. When user input a search string, the web application creates SQL query string by concatenating the search string with predefined SQL query.
+The music search page has a SQL Injection vulnerability. When user input a search string, the web application creates SQL query string by concatenating the search string with predefined SQL query.
 
 ```
 $keyword = $_GET["keyword"];
@@ -69,7 +75,7 @@ while ($row = $result->fetch_assoc()) {
     echo '<p class="user_comment">' . htmlspecialchars($row["comment"]) . '</p>';
   }
 ```
-- Set the HttpOnly flag in the HTTP Reponse so cookie can not be accessed directly by javascript.
+- Set the HttpOnly flag in the HTTP Response so cookie can not be accessed directly by javascript.
 
 #### d. Reference
 - https://owasp.org/www-community/attacks/xss/
@@ -87,7 +93,7 @@ system("ls -l /var/songs/" + $author + " | wc -l", $output);
 The attacker can send a malicious username in the author parameter to execute arbitrary command. For example, if the attacker sends the value ***quangld; cat /etc/passwd # "***, the web application will also read the output of /etc/passwd file.
 
 #### b. Impact
-The attacker can execute artribary command in the server. They can even download a shell to control the server.
+The attacker can execute commands in the server. They can even download a shell to control the server.
 
 #### c. Solution
 Avoid directly using functions that trigger system commands. If that is not possible, escape special shell characters before passing them to the function. For example, the above command can be fixed using:
@@ -133,7 +139,7 @@ There are two security issues related to the login process:
 - The second issue allows the attackers to capture password of a user and log in using the user password.
 
 #### c. Solution
-- Use password-hasing functions (e.g, bcrypt) or use salting with hash to store the password.
+- Use password-hashing functions (e.g, bcrypt) or use salting with hash to store the password.
 - Use TLS instead of encrypting the password in the web page (client side).
 
 #### d. Reference
@@ -162,7 +168,7 @@ With this configuration, attackers can easily gain access to the servers via the
 According to system audit result of the servers, the password policy (password complexity, password expiration time) for admin account is not defined. Besides, the admin account password has not been changed for more than 1 year. Additionally, root user is allowed to log in to the server via SSH.
 
 #### b. Impact
-Without strong password policy, it is easier for the attackers to perform password attack on the server. Addtionally, system administrators tend to set the same default password for different servers. Therefore, if a server is compromised, it is likely that the attackers can access other servers using the same password.
+Without strong password policy, it is easier for the attackers to perform password attack on the server. Additionally, system administrators tend to set the same default password for different servers. Therefore, if a server is compromised, it is likely that the attackers can access other servers using the same password.
 
 #### c. Solution
 - Set a strong password policy for servers.
@@ -176,7 +182,7 @@ Without strong password policy, it is easier for the attackers to perform passwo
 #### a. Description
 There are two security issues related to local administrator account password management.
 The first issue is that all local administrator account of employees' personal computers use the same password.
-The second problem is realted to administrator password managment process. The company utilities Active Directory domain to manage personal computers. In order to periodically change the Administrator password of personal computers, the system administrator uses Group Policy (GPO) to deploy a bat script to change the password. However, the bat script is publicly accessible and it contains the new password in plain text. Therefore, everybody in the network can access the bat file to read the new password. 
+The second problem is related to administrator password management process. The company utilities Active Directory domain to manage personal computers. In order to periodically change the Administrator password of personal computers, the system administrator uses Group Policy (GPO) to deploy a bat script to change the password. However, the bat script is publicly accessible and it contains the new password in plain text. Therefore, everybody in the network can access the bat file to read the new password. 
 
 #### b. Impact
 When the local administrator accounts use the same password, if a computer is infected by a malware, it can quickly spread through other computers in the same network.
